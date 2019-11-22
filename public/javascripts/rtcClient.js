@@ -1,11 +1,46 @@
+// Attach a media stream to an element.
+var  attachMediaStream = function(element, stream) {
+    if (typeof element.srcObject !== 'undefined') {
+      element.srcObject = stream;
+    } else if (typeof element.mozSrcObject !== 'undefined') {
+      element.mozSrcObject = stream;
+    } else if (typeof element.src !== 'undefined') {
+      element.src = URL.createObjectURL(stream);
+    } else {
+      console.log('Error attaching stream to element.');
+    }
+};
+
+var reattachMediaStream = function(to, from) {
+    to.src = from.src;
+};
+
+// Returns the result of getUserMedia as a Promise.
+function requestUserMedia(constraints) {
+  return new Promise(function(resolve, reject) {
+    var onSuccess = function(stream) {
+      resolve(stream);
+    };
+    var onError = function(error) {
+      reject(error);
+    };
+
+    try {
+      getUserMedia(constraints, onSuccess, onError);
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
+
+
 var PeerManager = (function () {
 
   var localId,
       config = {
         peerConnectionConfig: {
           iceServers: [
-            {"url": "stun:23.21.150.121"},
-            {"url": "stun:stun.l.google.com:19302"}
+            {"url": "stun:stun.xten.com"},
           ]
         },
         peerConnectionConstraints: {
@@ -82,7 +117,7 @@ var PeerManager = (function () {
         from = message.from,
         pc = (peerDatabase[from] || addPeer(from)).pc;
 
-    console.log('received ' + type + ' from ' + from);
+    console.log('received ' + type + ' from ' + from + ' payload ' + JSON.stringify(message.payload));
   
     switch (type) {
       case 'init':
@@ -108,7 +143,7 @@ var PeerManager = (function () {
     }
   }
   function send(type, to, payload) {
-    console.log('sending ' + type + ' to ' + to);
+    console.log('sending ' + type + ' to ' + to + ' payload ' + JSON.stringify(payload));
 
     socket.emit('message', {
       to: to,
