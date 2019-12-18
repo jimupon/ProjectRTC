@@ -28,3 +28,16 @@ You can test it in the (Chrome or Firefox) browser at localhost:3000.
 ## Author
 
 - [Pierre Chabardes](mailto:pierre@chabardes.net)
+
+
+## managementSettings
+```yaml
+managementSettings:
+  addUsers:
+    - name: user1
+      password: password1
+    - name: user2
+      password: password2
+  clientRememberPassword: true
+  licenseKey: XX-XXXX-XXXXX-XXXXX-XXXXX-XXXXX-XXXXX
+```
